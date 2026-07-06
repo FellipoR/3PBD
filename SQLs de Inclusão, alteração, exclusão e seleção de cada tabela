@@ -1,1 +1,59 @@
+INSERT INTO Especialidade (nome_especialidade) VALUES ('Estética Corporal');
+SELECT * FROM Especialidade;
+UPDATE Especialidade SET nome_especialidade = 'Estética Corporal Avançada' WHERE id_especialidade = 1;
+DELETE FROM Especialidade WHERE id_especialidade = 1;
 
+INSERT INTO Profissional (nome) VALUES ('Ana Beatriz Silva');
+SELECT * FROM Profissional;
+UPDATE Profissional SET nome = 'Ana Beatriz S. Ramos' WHERE id_profissional = 1;
+DELETE FROM Profissional WHERE id_profissional = 1;
+
+INSERT INTO Profissional_Especialidade (id_profissional, id_especialidade) VALUES (1, 1);
+SELECT * FROM Profissional_Especialidade;
+UPDATE Profissional_Especialidade SET id_especialidade = 2 WHERE id_profissional = 1 AND id_especialidade = 1;
+DELETE FROM Profissional_Especialidade WHERE id_profissional = 1 AND id_especialidade = 2;
+
+INSERT INTO Servico (id_especialidade, nome_servico, duracao_minutos, valor_padrao) VALUES (1, 'Drenagem Linfática', 60, 150.00);
+SELECT * FROM Servico;
+UPDATE Servico SET nome_servico = 'Drenagem Linfática Premium', valor_padrao = 170.00 WHERE id_servico = 1;
+DELETE FROM Servico WHERE id_servico = 1;
+
+INSERT INTO Pacote (nome_pacote, valor_promocional) VALUES ('Redução de Medidas de Verão', 420.00);
+SELECT * FROM Pacote;
+UPDATE Pacote SET valor_promocional = 399.90 WHERE id_pacote = 1;
+DELETE FROM Pacote WHERE id_pacote = 1;
+
+INSERT INTO Item_Pacote (id_pacote, id_servico) VALUES (1, 1);
+SELECT * FROM Item_Pacote;
+UPDATE Item_Pacote SET id_servico = 2 WHERE id_pacote = 1 AND id_servico = 1;
+DELETE FROM Item_Pacote WHERE id_pacote = 1 AND id_servico = 2;
+
+INSERT INTO Cliente (nome, telefone, email, saldo_credito_cancelamento) VALUES ('Clara Mendonça', '21988887777', 'clara@email.com', 0.00);
+SELECT * FROM Cliente;
+UPDATE Cliente SET telefone = '21977776666', saldo_credito_cancelamento = 45.00 WHERE id_cliente = 1;
+DELETE FROM Cliente WHERE id_cliente = 1;
+
+INSERT INTO Cartao (id_cliente, nome_titular, quatro_ultimos_digitos, bandeira, token_pagamento) VALUES (1, 'CLARA MENDONCA', '1234', 'Mastercard', 'tok_prod_998811');
+SELECT * FROM Cartao;
+UPDATE Cartao SET bandeira = 'Visa' WHERE id_cartao = 1;
+DELETE FROM Cartao WHERE id_cartao = 1;
+
+INSERT INTO Pagamento (id_cartao, valor_pago, nsu_autorizacao, data_pagamento) VALUES (1, 150.00, 'NSU987654321', '2026-07-06 15:30:00');
+SELECT * FROM Pagamento;
+UPDATE Pagamento SET valor_pago = 135.00 WHERE id_pagamento = 1;
+DELETE FROM Pagamento WHERE id_pagamento = 1;
+
+INSERT INTO Reserva (id_cliente, id_pagamento, data_criacao, valor_total, origem_reserva) VALUES (1, 1, '2026-07-06 15:25:00', 150.00, 'SITE');
+SELECT * FROM Reserva;
+UPDATE Reserva SET valor_total = 135.00, origem_reserva = 'RECEPÇÃO' WHERE id_reserva = 1;
+DELETE FROM Reserva WHERE id_reserva = 1;
+
+INSERT INTO Agendamento (id_reserva, id_servico, id_profissional, data_hora_inicio, data_hora_fim, status_atendimento) VALUES (1, 1, 1, '2026-07-07 14:00:00', '2026-07-07 15:00:00', 'AGENDADO');
+SELECT * FROM Agendamento;
+UPDATE Agendamento SET status_atendimento = 'CONCLUÍDO' WHERE id_agendamento = 1;
+DELETE FROM Agendamento WHERE id_agendamento = 1;
+
+INSERT INTO Fila_Espera (id_cliente, id_servico, data_hora_entrada, status_fila) VALUES (1, 1, '2026-07-06 15:40:00', 'AGUARDANDO');
+SELECT * FROM Fila_Espera;
+UPDATE Fila_Espera SET status_fila = 'ATENDIDO' WHERE id_fila = 1;
+DELETE FROM Fila_Espera WHERE id_fila = 1;
