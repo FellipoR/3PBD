@@ -1,1 +1,103 @@
-nxuobciobsV.
+USE clinica_estetica;
+
+CREATE TABLE Especialidade (
+    id_especialidade INT AUTO_INCREMENT PRIMARY KEY,
+    nome_especialidade VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Profissional (
+    id_profissional INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Profissional_Especialidade (
+    id_profissional INT,
+    id_especialidade INT,
+    PRIMARY KEY (id_profissional, id_especialidade),
+    FOREIGN KEY (id_profissional) REFERENCES Profissional(id_profissional) ON DELETE CASCADE,
+    FOREIGN KEY (id_especialidade) REFERENCES Especialidade(id_especialidade) ON DELETE CASCADE
+);
+
+CREATE TABLE Servico (
+    id_servico INT AUTO_INCREMENT PRIMARY KEY,
+    id_especialidade INT NOT NULL,
+    nome_servico VARCHAR(100) NOT NULL,
+    duracao_minutos INT NOT NULL,
+    valor_padrao DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_especialidade) REFERENCES Especialidade(id_especialidade)
+);
+
+CREATE TABLE Pacote (
+    id_pacote INT AUTO_INCREMENT PRIMARY KEY,
+    nome_pacote VARCHAR(100) NOT NULL,
+    valor_promocional DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE Item_Pacote (
+    id_pacote INT,
+    id_servico INT,
+    PRIMARY KEY (id_pacote, id_servico),
+    FOREIGN KEY (id_pacote) REFERENCES Pacote(id_pacote) ON DELETE CASCADE,
+    FOREIGN KEY (id_servico) REFERENCES Servico(id_servico) ON DELETE CASCADE
+);
+
+CREATE TABLE Cliente (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    telefone VARCHAR(20),
+    email VARCHAR(100) UNIQUE,
+    saldo_credito_cancelamento DECIMAL(10,2) DEFAULT 0.00
+);
+
+CREATE TABLE Cartao (
+    id_cartao INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    nome_titular VARCHAR(100) NOT NULL,
+    quatro_ultimos_digitos CHAR(4) NOT NULL,
+    bandeira VARCHAR(20) NOT NULL,
+    token_pagamento VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente) ON DELETE CASCADE
+);
+
+CREATE TABLE Pagamento (
+    id_pagamento INT AUTO_INCREMENT PRIMARY KEY,
+    id_cartao INT NOT NULL,
+    valor_pago DECIMAL(10,2) NOT NULL,
+    nsu_autorizacao VARCHAR(50) NOT NULL,
+    data_pagamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_cartao) REFERENCES Cartao(id_cartao)
+);
+
+CREATE TABLE Reserva (
+    id_reserva INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    id_pagamento INT, 
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    valor_total DECIMAL(10,2) NOT NULL,
+    origem_reserva ENUM('SITE', 'RECEPÇÃO') NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
+    FOREIGN KEY (id_pagamento) REFERENCES Pagamento(id_pagamento)
+);
+
+CREATE TABLE Agendamento (
+    id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
+    id_reserva INT NOT NULL,
+    id_servico INT NOT NULL,
+    id_profissional INT, 
+    data_hora_inicio DATETIME NOT NULL,
+    data_hora_fim DATETIME NOT NULL,
+    status_atendimento ENUM('AGENDADO', 'CONCLUÍDO', 'FALTOU', 'CANCELADO') DEFAULT 'AGENDADO',
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva) ON DELETE CASCADE,
+    FOREIGN KEY (id_servico) REFERENCES Servico(id_servico),
+    FOREIGN KEY (id_profissional) REFERENCES Profissional(id_profissional)
+);
+
+CREATE TABLE Fila_Espera (
+    id_fila INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    id_servico INT NOT NULL,
+    data_hora_entrada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status_fila ENUM('AGUARDANDO', 'ATENDIDO', 'DESISTIU') DEFAULT 'AGUARDANDO',
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente),
+    FOREIGN KEY (id_servico) REFERENCES Servico(id_servico)
+);
