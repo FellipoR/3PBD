@@ -1,1 +1,38 @@
+--Funcionalidade 1
+SELECT 
+    p.nome AS profissional,
+    e.nome_especialidade AS especialidade,
+    s.nome_servico AS servico,
+    s.duracao_minutos AS duracao,
+    s.valor_padrao AS valor
+FROM Profissional p
+JOIN Profissional_Especialidade pe ON p.id_profissional = pe.id_profissional
+JOIN Especialidade e ON pe.id_especialidade = e.id_especialidade
+JOIN Servico s ON s.id_especialidade = e.id_especialidade
+WHERE e.nome_especialidade = 'Estética Corporal';
 
+--Funcionalidade 2
+UPDATE Agendamento 
+SET status_atendimento = 'FALTOU' 
+WHERE id_agendamento = 1;
+
+UPDATE Cliente c
+JOIN Reserva r ON c.id_cliente = r.id_cliente
+JOIN Agendamento a ON r.id_reserva = a.id_reserva
+JOIN Servico s ON a.id_servico = s.id_servico
+SET c.saldo_credito_cancelamento = c.saldo_credito_cancelamento + (s.valor_padrao / 2)
+WHERE a.id_agendamento = 1;
+
+--Funcionalidade 3
+SELECT 
+    f.id_fila,
+    c.nome AS cliente,
+    c.telefone,
+    s.nome_servico AS servico_desejado,
+    f.data_hora_entrada
+FROM Fila_Espera f
+JOIN Cliente c ON f.id_cliente = c.id_cliente
+JOIN Servico s ON f.id_servico = s.id_servico
+WHERE f.status_fila = 'AGUARDANDO' AND f.id_servico = 1 
+ORDER BY f.data_hora_entrada ASC 
+LIMIT 1;
